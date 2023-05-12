@@ -138,4 +138,61 @@ mod tests {
       ])
     );
   }
+
+  #[test]
+  fn invalid_frontmatter_missing_end() {
+    let tempdir = TempDir::new("invalid").unwrap();
+
+    let file = tempdir.path().join("invalid.skel");
+
+    fs::write(
+      &file,
+      indoc! {
+      "
+        ---
+        var: world!
+        Hello, {% var %}
+      ",
+      },
+    )
+    .unwrap();
+
+    let result = Engine::with(file.clone()).run();
+
+    assert!(result.is_err());
+
+    assert_eq!(
+      result.unwrap_err().to_string(),
+      format!("Invalid template: {}, template must contain a frontmatter ending with `---`", file.display())
+    );
+  }
+
+  #[test]
+  fn invalid_frontmatter_missing_start() {
+    let tempdir = TempDir::new("invalid").unwrap();
+
+    let file = tempdir.path().join("invalid.skel");
+
+    fs::write(
+      &file,
+      indoc! {
+      "
+        var: world!
+        ---
+        Hello, {% var %}
+      ",
+      },
+    )
+    .unwrap();
+
+    let result = Engine::with(file.clone()).run();
+
+    assert!(result.is_err());
+
+    assert_eq!(
+      result.unwrap_err().to_string(),
+      format!("Invalid template: {}, template must start with `---` to specify its frontmatter",
+      file.display())
+    );
+  }
 }

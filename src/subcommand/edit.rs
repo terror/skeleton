@@ -40,7 +40,7 @@ impl Edit {
 
     fs::write(&file, entry.content)?;
 
-    let status = process::Command::new(&editor)
+    let status = process::Command::new(editor)
       .arg(&file)
       .status()
       .expect("Failed to open temporary file in editor");

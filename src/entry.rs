@@ -4,7 +4,7 @@ use super::*;
 pub(crate) struct Entry {
   pub(crate) name: String,
   pub(crate) content: String,
-  pub(crate) variables: HashMap<String, String>,
+  pub(crate) _variables: HashMap<String, String>,
 }
 
 impl SkimItem for Entry {
@@ -21,6 +21,6 @@ impl TryFrom<PathBuf> for Entry {
   type Error = anyhow::Error;
 
   fn try_from(path: PathBuf) -> Result<Self> {
-    Ok(Engine::with(path).run()?)
+    Engine::with(path).run()
   }
 }

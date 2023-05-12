@@ -56,7 +56,7 @@ impl Engine {
       );
     }
 
-    let mut substituted_content = content.clone();
+    let mut substituted_content = content;
 
     for (key, value) in variables.iter() {
       substituted_content =
@@ -71,7 +71,7 @@ impl Engine {
         .to_string_lossy()
         .to_string(),
       content: substituted_content,
-      variables,
+      _variables: variables,
     })
   }
 }
@@ -106,7 +106,7 @@ mod tests {
     assert_eq!(entry.content, "Hello, world!");
 
     assert_eq!(
-      entry.variables,
+      entry._variables,
       HashMap::from_iter(vec![("var".to_owned(), "world!".to_owned())])
     );
   }
@@ -129,7 +129,7 @@ mod tests {
     );
 
     assert_eq!(
-      entry.variables,
+      entry._variables,
       HashMap::from_iter(vec![
         ("command".to_owned(), "".to_owned()),
         ("filename".to_owned(), "".to_owned()),

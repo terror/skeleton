@@ -1,12 +1,7 @@
 use {
   crate::{
-    arguments::Arguments,
-    engine::Engine,
-    entry::Entry,
-    path_ext::PathExt,
-    search::Search,
-    store::Store,
-    subcommand::{Subcommand, DEFAULT_TEMPLATE},
+    arguments::Arguments, engine::Engine, entry::Entry, path_ext::PathExt,
+    search::Search, store::Store, subcommand::Subcommand,
   },
   anyhow::anyhow,
   clap::Parser,
@@ -15,6 +10,9 @@ use {
   tempdir::TempDir,
   walkdir::WalkDir,
 };
+
+#[cfg(test)]
+use crate::subcommand::DEFAULT_TEMPLATE;
 
 mod arguments;
 mod engine;

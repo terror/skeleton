@@ -4,7 +4,7 @@ use super::*;
 pub(crate) struct Add {
   #[clap(short, long, help = "Editor to edit the file with")]
   editor: Option<String>,
-  #[clap(long, short, help = "Prepoulate the file with a template")]
+  #[clap(long, short, help = "Prepopulate the file with a template")]
   with_template: bool,
 }
 
@@ -27,7 +27,7 @@ impl Add {
       fs::write(&file, DEFAULT_TEMPLATE.trim_start_matches('\n'))?;
     }
 
-    let status = process::Command::new(&editor)
+    let status = process::Command::new(editor)
       .arg(&file)
       .status()
       .expect("Failed to open temporary file in editor");

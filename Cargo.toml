@@ -8,6 +8,10 @@ anyhow = "1.0.71"
 clap = { version = "4.2.7", features = ["derive"] }
 dialoguer = "0.10.4"
 dirs = "5.0.1"
+serde_yaml = "0.9.21"
 skim = "0.10.4"
 tempdir = "0.3.7"
 walkdir = "2.3.3"
+
+[dev-dependencies]
+indoc = "2.0.1"

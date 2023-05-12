@@ -1,7 +1,7 @@
 default:
   just --list
 
-all: build test clippy fmt-check
+all: build test clippy fmt-check readme
 
 build:
   cargo build
@@ -15,6 +15,9 @@ fmt:
 fmt-check:
   cargo +nightly fmt --all -- --check
   @echo formatting check done
+
+readme:
+  present --in-place README.md
 
 run *args:
   cargo run -- {{args}}

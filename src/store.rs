@@ -31,7 +31,7 @@ impl Store {
   }
 
   /// Write a new entry to the store.
-  pub(crate) fn write(self, name: &str, content: &str) -> Result {
+  pub(crate) fn write(&self, name: &str, content: &str) -> Result {
     fs::write(self.path.join(format!("{name}.skel")), content)?;
     Ok(())
   }

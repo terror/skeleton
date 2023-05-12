@@ -16,23 +16,23 @@ pub(crate) const DEFAULT_TEMPLATE: &str = r#"
 #
 # filename: justfile
 #
-# This will create a file called `justfile` when the template is used.
+# This will create a file called `justfile` when the template is applied.
 
 filename:
 
 # This is a variable that lets you specify what command to run on the
-# file when it is used in a project.
+# file when it is applied in a project.
 #
 # Example:
 #
 # command: chmod +x
 #
-# This will make the file executable when the template is used.
+# This will make the file executable when the template is applied.
 
 command:
 
 # This variable lets you specify which groups this file belongs to so
-# you can batch-use files in the same group.
+# you can batch-apply files in the same group.
 #
 # Example:
 #
@@ -42,9 +42,9 @@ command:
 # of the following commands:
 #
 # ```
-# $ skel use --groups rust-cli
-# $ skel use --groups utility
-# $ skel use --groups rust-cli utility
+# $ skel apply --groups rust-cli
+# $ skel apply --groups utility
+# $ skel apply --groups rust-cli utility
 # ```
 
 groups:
@@ -56,7 +56,7 @@ variable: foo
 ---
 Place your content here!
 
-Here is a variable: {% variable %}.
+Here is a variable interpolation: {% variable %}.
 "#;
 
 #[derive(Debug, Parser)]
@@ -71,10 +71,12 @@ pub(crate) enum Subcommand {
 
 impl Subcommand {
   pub(crate) fn run(self) -> Result {
+    let store = Store::load()?;
+
     match self {
-      Self::Add(add) => add.run(),
-      Self::Apply(apply) => apply.run(),
-      Self::Edit(edit) => edit.run(),
+      Self::Add(add) => add.run(&store),
+      Self::Apply(apply) => apply.run(&store),
+      Self::Edit(edit) => edit.run(&store),
     }
   }
 }

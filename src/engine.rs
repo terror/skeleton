@@ -125,7 +125,7 @@ mod tests {
 
     assert_eq!(
       entry.content,
-      "Place your content here!\n\nHere is a variable: foo."
+      "Place your content here!\n\nHere is a variable interpolation: foo."
     );
 
     assert_eq!(

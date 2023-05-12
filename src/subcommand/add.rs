@@ -9,9 +9,7 @@ pub(crate) struct Add {
 }
 
 impl Add {
-  pub(crate) fn run(self) -> Result {
-    let store = Store::load()?;
-
+  pub(crate) fn run(self, store: &Store) -> Result {
     let editor = self
       .editor
       .or_else(|| std::env::var("EDITOR").ok())

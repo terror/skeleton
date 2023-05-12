@@ -11,9 +11,8 @@ pub(crate) struct Apply {
 }
 
 impl Apply {
-  pub(crate) fn run(self) -> Result {
-    let store = Store::load()?;
-    println!("store: {:?}", store);
+  pub(crate) fn run(self, store: &Store) -> Result {
+    println!("store: {:?}", store.entries()?);
     Ok(())
   }
 }

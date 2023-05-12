@@ -1,7 +1,12 @@
 use {
   crate::{
-    arguments::Arguments, engine::Engine, entry::Entry, path_ext::PathExt,
-    search::Search, store::Store, subcommand::Subcommand,
+    arguments::Arguments,
+    engine::Engine,
+    entry::Entry,
+    path_ext::PathExt,
+    search::Search,
+    store::Store,
+    subcommand::{Subcommand, DEFAULT_TEMPLATE},
   },
   anyhow::anyhow,
   clap::Parser,

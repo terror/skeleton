@@ -5,6 +5,7 @@ use {
   },
   anyhow::anyhow,
   clap::Parser,
+  serde_yaml::Value,
   skim::prelude::*,
   std::{collections::HashMap, fs, path::PathBuf, process, sync::Arc},
   tempdir::TempDir,

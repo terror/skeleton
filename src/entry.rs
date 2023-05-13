@@ -4,7 +4,7 @@ use super::*;
 pub(crate) struct Entry {
   pub(crate) name: String,
   pub(crate) content: String,
-  pub(crate) _variables: HashMap<String, String>,
+  pub(crate) variables: HashMap<String, Value>,
 }
 
 impl SkimItem for Entry {

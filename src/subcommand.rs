@@ -1,11 +1,12 @@
 use {
   super::*,
-  crate::subcommand::{add::Add, apply::Apply, edit::Edit},
+  crate::subcommand::{add::Add, apply::Apply, edit::Edit, list::List},
 };
 
 mod add;
 mod apply;
 mod edit;
+mod list;
 
 pub(crate) const DEFAULT_TEMPLATE: &str = r#"
 ---
@@ -67,6 +68,8 @@ pub(crate) enum Subcommand {
   Apply(Apply),
   #[clap(about = "Edit an existing template")]
   Edit(Edit),
+  #[clap(about = "List all templates")]
+  List(List),
 }
 
 impl Subcommand {
@@ -77,6 +80,7 @@ impl Subcommand {
       Self::Add(add) => add.run(&store),
       Self::Apply(apply) => apply.run(&store),
       Self::Edit(edit) => edit.run(&store),
+      Self::List(list) => list.run(&store),
     }
   }
 }

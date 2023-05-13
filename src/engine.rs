@@ -39,9 +39,8 @@ impl Engine {
     let mut variables = HashMap::new();
 
     if !frontmatter.is_empty() {
-      variables.extend(serde_yaml::from_str::<HashMap<String, String>>(
-        frontmatter,
-      )?);
+      variables
+        .extend(serde_yaml::from_str::<HashMap<String, Value>>(frontmatter)?);
     }
 
     let content = content
@@ -59,8 +58,10 @@ impl Engine {
     let mut substituted_content = content;
 
     for (key, value) in variables.iter() {
-      substituted_content =
-        substituted_content.replace(&format!("{{% {} %}}", key), value);
+      substituted_content = substituted_content.replace(
+        &format!("{{% {} %}}", key),
+        serde_yaml::to_string(value)?.trim(),
+      );
     }
 
     Ok(Entry {
@@ -71,7 +72,7 @@ impl Engine {
         .to_string_lossy()
         .to_string(),
       content: substituted_content,
-      _variables: variables,
+      variables,
     })
   }
 }
@@ -106,8 +107,11 @@ mod tests {
     assert_eq!(entry.content, "Hello, world!");
 
     assert_eq!(
-      entry._variables,
-      HashMap::from_iter(vec![("var".to_owned(), "world!".to_owned())])
+      entry.variables,
+      HashMap::from_iter(vec![(
+        "var".to_owned(),
+        Value::String("world!".to_owned())
+      )])
     );
   }
 
@@ -129,12 +133,12 @@ mod tests {
     );
 
     assert_eq!(
-      entry._variables,
+      entry.variables,
       HashMap::from_iter(vec![
-        ("command".to_owned(), "".to_owned()),
-        ("filename".to_owned(), "".to_owned()),
-        ("groups".to_owned(), "".to_owned()),
-        ("variable".to_owned(), "foo".to_owned())
+        ("command".to_owned(), Value::Null),
+        ("filename".to_owned(), Value::Null),
+        ("groups".to_owned(), Value::Null),
+        ("variable".to_owned(), Value::String("foo".to_owned()))
       ])
     );
   }

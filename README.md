@@ -8,6 +8,7 @@ Commands:
   add    Add a new template
   apply  Apply a template
   edit   Edit an existing template
+  list   List all templates
   help   Print this message or the help of the given subcommand(s)
 
 Options:

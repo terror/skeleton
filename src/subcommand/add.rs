@@ -15,9 +15,20 @@ impl Add {
       .or_else(|| std::env::var("EDITOR").ok())
       .ok_or_else(|| anyhow::anyhow!("Failed to locate editor"))?;
 
-    let name = dialoguer::Input::<String>::new()
-      .with_prompt("Name")
+    let mut name = dialoguer::Input::<String>::new()
+      .with_prompt("Template name")
       .interact()?;
+
+    while store.exists(&name)? {
+      println!(
+        "A template with that name already exists, please choose another name."
+      );
+
+      name = dialoguer::Input::<String>::new()
+        .with_prompt("Template name")
+        .with_initial_text(&name)
+        .interact()?;
+    }
 
     let tempdir = TempDir::new("add")?;
 

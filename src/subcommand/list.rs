@@ -2,36 +2,33 @@ use super::*;
 
 #[derive(Debug, Parser)]
 pub(crate) struct List {
-  #[clap(short, long, help = "Groups to filter entries by")]
+  #[clap(short, long, help = "Groups to filter templates by")]
   groups: Option<Vec<String>>,
 }
 
 impl List {
   pub(crate) fn run(self, store: &Store) -> Result {
-    let mut entries = store.entries()?;
+    let mut templates = store.templates()?;
 
     if let Some(filter_groups) = self.groups {
-      entries = entries
-        .into_iter()
-        .filter(|entry| {
-          match entry
-            .variables
-            .get("groups")
-            .cloned()
-            .unwrap_or(Value::Sequence(vec![]))
-            .as_sequence()
-          {
-            Some(groups) => groups.iter().any(|group| {
-              filter_groups.contains(&group.as_str().unwrap().to_owned())
-            }),
-            None => false,
-          }
-        })
-        .collect::<Vec<_>>();
+      templates.retain(|template| {
+        match template
+          .variables
+          .get("groups")
+          .cloned()
+          .unwrap_or(Value::Sequence(vec![]))
+          .as_sequence()
+        {
+          Some(groups) => groups.iter().any(|group| {
+            filter_groups.contains(&group.as_str().unwrap().to_owned())
+          }),
+          None => false,
+        }
+      })
     }
 
-    for entry in entries {
-      println!("{}", entry.name);
+    for template in templates {
+      println!("{}", template.name()?);
     }
 
     Ok(())

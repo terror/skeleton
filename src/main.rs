@@ -1,9 +1,8 @@
 use {
   crate::{
-    arguments::Arguments, engine::Engine, entry::Entry, path_ext::PathExt,
-    search::Search, store::Store, subcommand::Subcommand,
+    arguments::Arguments, path_ext::PathExt, search::Search, store::Store,
+    subcommand::Subcommand, template::Template,
   },
-  anyhow::anyhow,
   clap::Parser,
   serde_yaml::Value,
   skim::prelude::*,
@@ -16,12 +15,11 @@ use {
 use crate::subcommand::DEFAULT_TEMPLATE;
 
 mod arguments;
-mod engine;
-mod entry;
 mod path_ext;
 mod search;
 mod store;
 mod subcommand;
+mod template;
 
 type Result<T = (), E = anyhow::Error> = std::result::Result<T, E>;
 

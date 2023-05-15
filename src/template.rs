@@ -82,6 +82,16 @@ impl Template {
       })
   }
 
+  pub(crate) fn groups(&self) -> Option<serde_yaml::Sequence> {
+    self
+      .variables
+      .get("groups")
+      .cloned()
+      .unwrap_or(Value::Sequence(vec![]))
+      .as_sequence()
+      .cloned()
+  }
+
   pub(crate) fn substitute(&self) -> Result<String> {
     let frontmatter_end = self.content
       .find(&format!("\n{}", Self::FRONTMATTER_DELIMITER))

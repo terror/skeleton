@@ -11,19 +11,11 @@ impl List {
     let mut templates = store.templates()?;
 
     if let Some(filter_groups) = self.groups {
-      templates.retain(|template| {
-        match template
-          .variables
-          .get("groups")
-          .cloned()
-          .unwrap_or(Value::Sequence(vec![]))
-          .as_sequence()
-        {
-          Some(groups) => groups.iter().any(|group| {
-            filter_groups.contains(&group.as_str().unwrap().to_owned())
-          }),
-          None => false,
-        }
+      templates.retain(|template| match template.groups() {
+        Some(groups) => groups.iter().any(|group| {
+          filter_groups.contains(&group.as_str().unwrap().to_owned())
+        }),
+        None => false,
       })
     }
 

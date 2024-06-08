@@ -1,20 +1,20 @@
-## skel 🏗️
+## skeleton 💀
 
-**skel** is a lightweight project scaffolding utility. It lets you group and use
+**skeleton** is a lightweight project scaffolding utility. It lets you group and use
 commonly used project-specific files.
 
 ### Installation
 
 ```
-git clone https://github.com/terror/skel.git
-cd skel
+git clone https://github.com/terror/skeleton.git
+cd skeleton
 cargo install --path .
 ```
 
 ### Usage
 
 ```present cargo run -- --help
-Usage: skel <COMMAND>
+Usage: sk <COMMAND>
 
 Commands:
   add    Add a new template
@@ -29,5 +29,5 @@ Options:
 
 ### Prior Art
 
-`skel` is a re-implementation and improvement of the Python program I wrote a while
+`skeleton` is a re-implementation and improvement of the Python program I wrote a while
 back called `bp`, which you can find [here](https://github.com/terror/bp).

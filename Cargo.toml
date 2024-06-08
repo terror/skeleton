@@ -3,6 +3,10 @@ name = "skel"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "sk"
+path = "src/main.rs"
+
 [dependencies]
 anyhow = "1.0.71"
 clap = { version = "4.2.7", features = ["derive"] }

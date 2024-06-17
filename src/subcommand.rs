@@ -8,57 +8,57 @@ mod apply;
 mod edit;
 mod list;
 
-pub(crate) const DEFAULT_TEMPLATE: &str = r#"
----
-# This is a special variable that will be used as the templates
-# filename when the template is used in a project.
-#
-# Example:
-#
-# filename: justfile
-#
-# This will create a file called `justfile` when the template is applied.
+pub(crate) const DEFAULT_TEMPLATE: &str = indoc! {"
+  ---
+  # This is a special variable that will be used as the templates
+  # filename when the template is used in a project.
+  #
+  # Example:
+  #
+  # filename: justfile
+  #
+  # This will create a file called `justfile` when the template is applied.
 
-filename:
+  filename:
 
-# This is a variable that lets you specify what command to run on the
-# file when it is applied in a project.
-#
-# Example:
-#
-# command: chmod +x
-#
-# This will make the file executable when the template is applied.
+  # This is a variable that lets you specify what command to run on the
+  # file when it is applied in a project.
+  #
+  # Example:
+  #
+  # command: chmod +x
+  #
+  # This will make the file executable when the template is applied.
 
-command:
+  command:
 
-# This variable lets you specify which groups this file belongs to so
-# you can batch-apply files in the same group.
-#
-# Example:
-#
-# groups: ["rust-cli", "utility"]
-#
-# This will let you use the file in a project by running either one
-# of the following commands:
-#
-# ```
-# $ skel apply --groups rust-cli
-# $ skel apply --groups utility
-# $ skel apply --groups rust-cli utility
-# ```
+  # This variable lets you specify which groups this file belongs to so
+  # you can batch-apply files in the same group.
+  #
+  # Example:
+  #
+  # groups: [\"rust-cli\", \"utility\"]
+  #
+  # This will let you use the file in a project by running either one
+  # of the following commands:
+  #
+  # ```
+  # $ skel apply --groups rust-cli
+  # $ skel apply --groups utility
+  # $ skel apply --groups rust-cli utility
+  # ```
 
-groups:
+  groups:
 
-# This is a variable with a random name, you can use it within the template
-# by using the `{% variable %}` syntax.
+  # This is a variable with a random name, you can use it within the template
+  # by using the `{% variable %}` syntax.
 
-variable: foo
----
-Place your content here!
+  variable: foo
+  ---
+  Place your content here!
 
-Here is a variable interpolation: {% variable %}.
-"#;
+  Here is a variable interpolation: {% variable %}.
+"};
 
 #[derive(Debug, Parser)]
 pub(crate) enum Subcommand {

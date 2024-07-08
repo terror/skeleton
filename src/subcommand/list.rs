@@ -1,3 +1,6 @@
+use anyhow::Result;
+use std::collections::HashSet;
+
 use super::*;
 
 #[derive(Debug, Parser)]
@@ -7,21 +10,37 @@ pub(crate) struct List {
 }
 
 impl List {
-  pub(crate) fn run(self, store: &Store) -> Result {
-    let mut templates = store.templates()?;
+  pub(crate) fn run(self, store: &Store) -> Result<()> {
+    let templates = store.templates()?;
 
-    if let Some(filter_groups) = self.groups {
-      templates.retain(|template| match template.groups() {
-        Some(groups) => groups.iter().any(|group| {
-          filter_groups.contains(&group.as_str().unwrap().to_owned())
-        }),
-        None => false,
+    let filter_groups: Option<HashSet<_>> =
+      self.groups.map(|group| group.into_iter().collect());
+
+    let mut filtered_templates = templates
+      .into_iter()
+      .filter(|template| {
+        filter_groups.as_ref().map_or(true, |filter_group| {
+          template.groups().map_or(false, |groups| {
+            groups.iter().any(|group| {
+              group
+                .as_str()
+                .map(|s| filter_group.contains(s))
+                .unwrap_or(false)
+            })
+          })
+        })
       })
-    }
+      .collect::<Vec<_>>();
 
-    for template in templates {
-      println!("{}", template.name()?);
-    }
+    filtered_templates.sort_by(|a, b| {
+      a.name()
+        .unwrap_or_default()
+        .cmp(&b.name().unwrap_or_default())
+    });
+
+    filtered_templates.iter().for_each(|template| {
+      println!("{}", template.name().unwrap());
+    });
 
     Ok(())
   }

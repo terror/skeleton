@@ -1,13 +1,21 @@
 use {
   crate::{
-    arguments::Arguments, path_ext::PathExt, search::Search, store::Store,
-    subcommand::Subcommand, template::Template,
+    arguments::Arguments,
+    path_ext::PathExt,
+    search::Search,
+    store::{Store, TEMPLATE_EXTENSION},
+    subcommand::Subcommand,
+    template::Template,
   },
+  anyhow::{anyhow, Context},
   clap::Parser,
   indoc::indoc,
   serde_yaml::Value,
   skim::prelude::*,
-  std::{collections::HashMap, fs, path::PathBuf, process, sync::Arc},
+  std::{
+    collections::HashMap, env, fs, path::PathBuf, process, process::Command,
+    sync::Arc,
+  },
   tempdir::TempDir,
   walkdir::WalkDir,
 };

@@ -205,6 +205,54 @@ mod tests {
   }
 
   #[test]
+  fn populated_variables() {
+    let tempdir = TempDir::new("default").unwrap();
+
+    let file = tempdir.path().join("default.skel");
+
+    let template = indoc! {
+      "
+        ---
+        command: chmod +x
+        filename: justfile
+        groups: [\"rust-cli\", \"utility\"]
+        variable: bar
+        ---
+        Place your content here!
+
+        Here is a variable interpolation: {% variable %}.
+      "
+    };
+
+    fs::write(&file, template).unwrap();
+
+    let template = Template::try_from(file).unwrap();
+
+    assert_eq!(template.name().unwrap(), "default");
+
+    assert_eq!(
+      template.substitute().unwrap(),
+      "Place your content here!\n\nHere is a variable interpolation: bar."
+    );
+
+    assert_eq!(
+      template.variables,
+      HashMap::from_iter(vec![
+        ("command".to_owned(), Value::String("chmod +x".to_owned())),
+        ("filename".to_owned(), Value::String("justfile".to_owned())),
+        (
+          "groups".to_owned(),
+          Value::Sequence(vec![
+            Value::String("rust-cli".to_owned()),
+            Value::String("utility".to_owned())
+          ])
+        ),
+        ("variable".to_owned(), Value::String("bar".to_owned()))
+      ])
+    );
+  }
+
+  #[test]
   fn invalid_frontmatter_missing_end() {
     let tempdir = TempDir::new("invalid").unwrap();
 

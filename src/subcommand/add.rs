@@ -4,7 +4,7 @@ use super::*;
 pub(crate) struct Add {
   #[clap(short, long, help = "Editor to edit the file with")]
   editor: Option<String>,
-  #[clap(long, short, help = "Prepopulate the file with a template")]
+  #[clap(long, short, help = "Pre-populate the file with a template")]
   with_template: bool,
 }
 
@@ -32,7 +32,7 @@ impl Add {
 
     let tempdir = TempDir::new("add")?;
 
-    let file = tempdir.path().join(format!("{name}.skel"));
+    let file = tempdir.path().join(format!("{name}{TEMPLATE_EXTENSION}"));
 
     if self.with_template {
       fs::write(&file, DEFAULT_TEMPLATE.trim_start_matches('\n'))?;

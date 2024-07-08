@@ -17,3 +17,6 @@ serde_yaml = "0.9.21"
 skim = "0.10.4"
 tempdir = "0.3.7"
 walkdir = "2.3.3"
+
+[dev-dependencies]
+executable-path = "1.0.0"

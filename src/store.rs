@@ -1,7 +1,7 @@
 use super::*;
 
-pub const TEMPLATE_DIR: &str = ".skeleton";
-pub const TEMPLATE_EXTENSION: &str = ".skeleton";
+pub(crate) const TEMPLATE_DIR: &str = ".skeleton";
+pub(crate) const TEMPLATE_EXTENSION: &str = ".skeleton";
 
 #[derive(Debug)]
 pub(crate) struct Store {
@@ -47,7 +47,7 @@ impl Store {
       self.path.join(format!("{name}{TEMPLATE_EXTENSION}")),
       content,
     )
-    .map_err(|e| anyhow::anyhow!("Failed to write template: {}", e))
+    .map_err(|e| anyhow!("Failed to write template: {}", e))
   }
 }
 

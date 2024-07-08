@@ -21,7 +21,7 @@ impl SkimItem for Template {
   }
 
   fn preview(&self, _context: PreviewContext) -> ItemPreview {
-    ItemPreview::Command(format!("echo \"{}\"", self.content.clone()))
+    ItemPreview::Command(format!("cat \"{}\"", self.path.display()))
   }
 }
 
@@ -82,6 +82,14 @@ impl Template {
       })
   }
 
+  pub(crate) fn filename(&self) -> Option<serde_yaml::Value> {
+    self.variables.get("filename").cloned()
+  }
+
+  pub(crate) fn command(&self) -> Option<serde_yaml::Value> {
+    self.variables.get("command").cloned()
+  }
+
   pub(crate) fn groups(&self) -> Option<serde_yaml::Sequence> {
     self
       .variables
@@ -90,6 +98,10 @@ impl Template {
       .unwrap_or(Value::Sequence(vec![]))
       .as_sequence()
       .cloned()
+  }
+
+  pub(crate) fn replace_variable(&mut self, variable: &str, value: Value) {
+    self.variables.insert(variable.to_owned(), value);
   }
 
   pub(crate) fn substitute(&self) -> Result<String> {

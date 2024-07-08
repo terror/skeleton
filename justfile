@@ -16,6 +16,9 @@ fmt-check:
   cargo fmt --all -- --check
   @echo formatting check done
 
+install:
+  cargo install --path .
+
 readme:
   present --in-place README.md
 

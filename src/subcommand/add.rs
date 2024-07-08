@@ -26,7 +26,6 @@ impl Add {
 
       name = dialoguer::Input::<String>::new()
         .with_prompt("Template name")
-        .with_initial_text(&name)
         .interact()?;
     }
 

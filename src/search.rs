@@ -10,10 +10,6 @@ impl<T: SkimItem + Clone> Search<T> {
   }
 
   pub(crate) fn run(&self) -> Result<Vec<T>> {
-    if self.items.len() == 1 {
-      return Ok(self.items.clone());
-    }
-
     let options = SkimOptionsBuilder::default()
       .height(Some("100%"))
       .preview(Some(""))

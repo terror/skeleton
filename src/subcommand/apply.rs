@@ -67,10 +67,6 @@ impl Apply {
         }
       }
 
-      let command = template.command().ok_or_else(|| {
-        anyhow::anyhow!("Template `{}` does not specify a command", name)
-      })?;
-
       let file_path = std::env::current_dir()?.join(filename.as_str().unwrap());
 
       if file_path.exists() && !self.overwrite {
@@ -98,25 +94,27 @@ impl Apply {
         format!("Failed to write file `{}`", file_path.display())
       })?;
 
-      let mut command_parts = command.as_str().unwrap().split_whitespace();
+      if let Some(command) = template.command() {
+        let mut command_parts = command.as_str().unwrap().split_whitespace();
 
-      let command_name = command_parts.next().unwrap();
-      let command_args: Vec<_> = command_parts.collect();
+        let command_name = command_parts.next().unwrap();
+        let command_args: Vec<_> = command_parts.collect();
 
-      let output = Command::new(command_name)
-        .args(command_args)
-        .arg(&file_path)
-        .output()
-        .with_context(|| {
-          format!("Failed to execute command: {}", command_name)
-        })?;
+        let output = Command::new(command_name)
+          .args(command_args)
+          .arg(&file_path)
+          .output()
+          .with_context(|| {
+            format!("Failed to execute command: {}", command_name)
+          })?;
 
-      if !output.status.success() {
-        anyhow::bail!(
-          "Command failed for template `{}`: {}",
-          name,
-          String::from_utf8_lossy(&output.stderr)
-        );
+        if !output.status.success() {
+          anyhow::bail!(
+            "Command failed for template `{}`: {}",
+            name,
+            String::from_utf8_lossy(&output.stderr)
+          );
+        }
       }
     }
 

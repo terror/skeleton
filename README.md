@@ -3,6 +3,10 @@
 **skeleton** is a lightweight project scaffolding utility. It lets you group and use
 commonly used project-specific files.
 
+### Demo
+
+[![asciicast](https://asciinema.org/a/rx0tWWfPTPZNXoBboE7dzX3tX.svg)](https://asciinema.org/a/rx0tWWfPTPZNXoBboE7dzX3tX)
+
 ### Installation
 
 ```

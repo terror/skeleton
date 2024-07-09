@@ -13,30 +13,34 @@ impl Edit {
       .or_else(|| env::var("EDITOR").ok())
       .context("Failed to locate editor")?;
 
-    let template = Search::<Template>::with(store.templates()?.to_vec())
-      .run()?
-      .into_iter()
-      .next()
-      .context("Failed to locate template")?;
+    let templates = Search::<Template>::with(store.templates()?.to_vec())
+      .run()
+      .context("Failed to search templates")?;
 
-    let tempdir = TempDir::new("edit")?;
+    for template in templates {
+      let name = template.name()?;
 
-    let file = tempdir
-      .path()
-      .join(format!("{}{TEMPLATE_EXTENSION}", template.name()?));
+      let tempdir = TempDir::new(&format!("edit-{name}"))?;
 
-    fs::write(&file, &template.content)?;
+      let file = tempdir
+        .path()
+        .join(format!("{}{TEMPLATE_EXTENSION}", template.name()?));
 
-    let status = Command::new(&editor)
-      .arg(&file)
-      .status()
-      .context("Failed to open temporary file in editor")?;
+      fs::write(&file, &template.content)?;
 
-    if !status.success() {
-      anyhow::bail!("Editor exited with non-zero status");
+      let status = Command::new(&editor)
+        .arg(&file)
+        .status()
+        .context("Failed to open temporary file in editor")?;
+
+      if !status.success() {
+        bail!("Editor exited with non-zero status");
+      }
+
+      store.write(&name, &fs::read_to_string(&file)?)?;
+
+      println!("Saved changes to `{}` successfully.", name.bold())
     }
-
-    store.write(&template.name()?, &fs::read_to_string(&file)?)?;
 
     Ok(())
   }

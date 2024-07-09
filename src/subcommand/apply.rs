@@ -24,7 +24,7 @@ impl Apply {
           template.groups().map_or(false, |template_groups| {
             template_groups
               .iter()
-              .any(|group| groups.contains(group.as_str().unwrap()))
+              .any(|group| groups.contains(group.as_str().unwrap_or_default()))
           })
         })
       })
@@ -40,40 +40,38 @@ impl Apply {
       let name = template.name()?;
 
       let filename = template.filename().ok_or_else(|| {
-        anyhow::anyhow!("Template `{}` does not specify a filename", name)
+        anyhow!("Template `{}` does not specify a filename", name.bold())
       })?;
 
-      println!("Applying template `{}`", name);
-
-      let free_variables: Vec<_> = template
+      let free_variables = template
         .variables
         .keys()
         .filter(|k| !effect_variables.contains(&k.as_str()))
         .cloned()
-        .collect();
+        .collect::<Vec<_>>();
 
       if self.interactive {
-        let theme = dialoguer::theme::ColorfulTheme::default();
+        let theme = ColorfulTheme::default();
 
         for variable in free_variables {
           template.replace_variable(
             &variable,
             serde_yaml::to_value(
               Input::<String>::with_theme(&theme)
-                .with_prompt(format!("Enter value for {}", variable))
+                .with_prompt(format!("Enter value for `{}`", variable.bold()))
                 .interact_text()?,
             )?,
           );
         }
       }
 
-      let file_path = std::env::current_dir()?.join(filename.as_str().unwrap());
+      let file_path =
+        std::env::current_dir()?.join(filename.as_str().unwrap_or_default());
 
       if file_path.exists() && !self.overwrite {
         println!(
-          "File `{}` already exists. Skipping template `{}`.",
-          file_path.display(),
-          name
+          "File `{}` already exists, specify `--overwrite` to overwrite it",
+          file_path.display()
         );
         continue;
       }
@@ -94,10 +92,16 @@ impl Apply {
         format!("Failed to write file `{}`", file_path.display())
       })?;
 
-      if let Some(command) = template.command() {
-        let mut command_parts = command.as_str().unwrap().split_whitespace();
+      println!("Applied template `{name}` to `{}`", file_path.display());
 
-        let command_name = command_parts.next().unwrap();
+      if let Some(command) = template.command() {
+        let mut command_parts =
+          command.as_str().unwrap_or_default().split_whitespace();
+
+        let command_name = command_parts
+          .next()
+          .ok_or(anyhow!("Command for template `{}` is empty", name.bold()))?;
+
         let command_args: Vec<_> = command_parts.collect();
 
         let output = Command::new(command_name)
@@ -109,7 +113,7 @@ impl Apply {
           })?;
 
         if !output.status.success() {
-          anyhow::bail!(
+          bail!(
             "Command failed for template `{}`: {}",
             name,
             String::from_utf8_lossy(&output.stderr)

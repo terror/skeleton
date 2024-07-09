@@ -7,9 +7,10 @@ use {
     subcommand::Subcommand,
     template::Template,
   },
-  anyhow::{anyhow, Context},
+  anyhow::{anyhow, bail, Context},
   clap::Parser,
-  dialoguer::Input,
+  colored::*,
+  dialoguer::{theme::ColorfulTheme, Input},
   indoc::indoc,
   serde_yaml::Value,
   skim::prelude::*,
@@ -39,7 +40,7 @@ type Result<T = (), E = anyhow::Error> = std::result::Result<T, E>;
 
 fn main() {
   if let Err(error) = Arguments::parse().run() {
-    eprintln!("error: {error}");
+    eprintln!("{}: {}", "error".red().bold(), error);
     process::exit(1);
   }
 }

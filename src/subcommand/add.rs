@@ -12,10 +12,10 @@ impl Add {
   pub(crate) fn run(self, store: &Store) -> Result {
     let editor = self
       .editor
-      .or_else(|| std::env::var("EDITOR").ok())
-      .ok_or_else(|| anyhow::anyhow!("Failed to locate editor"))?;
+      .or_else(|| env::var("EDITOR").ok())
+      .ok_or_else(|| anyhow!("Failed to locate editor"))?;
 
-    let mut name = dialoguer::Input::<String>::new()
+    let mut name = Input::<String>::new()
       .with_prompt("Template name")
       .interact()?;
 
@@ -24,7 +24,7 @@ impl Add {
         "A template with that name already exists, please choose another name."
       );
 
-      name = dialoguer::Input::<String>::new()
+      name = Input::<String>::new()
         .with_prompt("Template name")
         .interact()?;
     }
@@ -40,13 +40,15 @@ impl Add {
     let status = process::Command::new(editor)
       .arg(&file)
       .status()
-      .expect("Failed to open temporary file in editor");
+      .context("Failed to open temporary file in editor")?;
 
     if !status.success() {
-      anyhow::bail!("Failed to open temporary file in editor");
+      bail!("Editor exited with non-zero status");
     }
 
     store.write(&name, &fs::read_to_string(&file)?)?;
+
+    println!("Template `{}` added successfully.", name.bold());
 
     Ok(())
   }

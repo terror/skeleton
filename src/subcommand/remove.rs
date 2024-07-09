@@ -11,9 +11,16 @@ impl Remove {
       .run()
       .context("Failed to locate template")?;
 
-    for template in templates {
-      fs::remove_file(template.path)?;
+    for template in &templates {
+      fs::remove_file(&template.path)?;
     }
+
+    let names = templates
+      .iter()
+      .map(|template| template.name())
+      .collect::<Result<Vec<_>>>()?;
+
+    println!("Removed templates `{}` successfully", names.join(", "));
 
     Ok(())
   }

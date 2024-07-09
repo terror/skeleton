@@ -35,9 +35,9 @@ impl List {
         .cmp(&b.name().unwrap_or_default())
     });
 
-    filtered_templates.iter().for_each(|template| {
-      println!("{}", template.name().unwrap());
-    });
+    for template in filtered_templates {
+      println!("{}", template.name()?);
+    }
 
     Ok(())
   }

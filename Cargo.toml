@@ -8,15 +8,16 @@ name = "sk"
 path = "src/main.rs"
 
 [dependencies]
-anyhow = "1.0.71"
-clap = { version = "4.2.7", features = ["derive"] }
+anyhow = "1.0.86"
+clap = { version = "4.5.9", features = ["derive"] }
+colored = "2.1.0"
 dialoguer = "0.10.4"
 dirs = "5.0.1"
-indoc = "2.0.1"
-serde_yaml = "0.9.21"
+indoc = "2.0.5"
+serde_yaml = "0.9.34"
 skim = "0.10.4"
 tempdir = "0.3.7"
-walkdir = "2.3.3"
+walkdir = "2.5.0"
 
 [dev-dependencies]
 executable-path = "1.0.0"

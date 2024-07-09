@@ -1,7 +1,15 @@
 [package]
-name = "skel"
+name = "skeleton-cli"
 version = "0.1.0"
+description = "A project scaffolding utility"
+authors = ["Liam <liam@scalzulli.com>"]
 edition = "2021"
+license = "CC0-1.0"
+homepage = "https://github.com/terror/skeleton"
+repository = "https://github.com/terror/skeleton"
+categories = ["command-line-utilities"]
+keywords = ["command-line", "productivity", "vim", "utility"]
+resolver = "2"
 
 [[bin]]
 name = "sk"

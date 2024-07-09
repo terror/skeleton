@@ -34,8 +34,17 @@ The binary is called `sk` and has only been tested on a Unix-based machine.
 
 ### Installation
 
+You can install the **skeleton** command-line utility via the rust package manager
+[cargo](https://doc.rust-lang.org/cargo/):
+
+```bash
+cargo install skeleton-cli
 ```
-git clone https://github.com/terror/skeleton.git
+
+...or you can build it from source:
+
+```bash
+git clone https://github.com/terror/skeleton
 cd skeleton
 cargo install --path .
 ```

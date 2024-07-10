@@ -26,6 +26,25 @@ A **free** variable is used to substitute into the templates content, you can al
 specify whether or not to be interactively prompted for these types of variables
 when applying templates.
 
+These types of variables follow a special kind of syntax when used within
+templates, for instance:
+
+```
+---
+filename: rustfmt.toml
+groups: [rust-cli]
+tab_spaces: 2
+---
+edition = "2018"
+max_width = 80
+newline_style = "Unix"
+tab_spaces = {% tab_spaces %}
+use_field_init_shorthand = true
+use_try_shorthand = true
+```
+
+Note that `{% tab_spaces %}` will replace to `2` when applying this template.
+
 The binary is called `sk` and has only been tested on a Unix-based machine.
 
 ### Demo

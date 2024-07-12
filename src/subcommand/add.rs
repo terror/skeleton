@@ -2,10 +2,12 @@ use super::*;
 
 #[derive(Debug, Parser)]
 pub(crate) struct Add {
-  #[clap(short, long, help = "Editor to edit the file with")]
+  #[clap(long, short, help = "Editor to edit the file with")]
   editor: Option<String>,
   #[clap(long, short, help = "Pre-populate the file with a template")]
   with_template: bool,
+  #[clap(long, short)]
+  from_file: Option<PathBuf>,
 }
 
 impl Add {
@@ -35,6 +37,21 @@ impl Add {
 
     if self.with_template {
       fs::write(&file, DEFAULT_TEMPLATE.trim_start_matches('\n'))?;
+    }
+
+    if let Some(filename) = self.from_file {
+      if self.with_template {
+        println!("Noticed `--with-template` specified, overriding default template with file");
+      }
+
+      fs::write(
+        &file,
+        format!(
+          "---\nfilename: {}\n---\n{}",
+          filename.display(),
+          fs::read_to_string(&filename)?
+        ),
+      )?;
     }
 
     let status = process::Command::new(editor)

@@ -1,6 +1,7 @@
 ## skeleton 💀
 
 [![CI](https://github.com/terror/skeleton/actions/workflows/ci.yml/badge.svg)](https://github.com/terror/skeleton/actions/workflows/ci.yml)
+[![crates.io](https://shields.io/crates/v/skeleton-cli.svg)](https://crates.io/crates/skeleton-cli)
 
 **skeleton** is a tool that makes it easier to start new projects.
 

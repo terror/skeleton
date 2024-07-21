@@ -64,7 +64,7 @@ jobs:
         run: cargo build
 
       - name: Lockfile
-        run: cargo update --locked --package edmv
+        run: cargo update --locked --package skeleton
 
       - name: Lint
         run: cargo clippy --all-targets --all-features

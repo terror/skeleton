@@ -1,5 +1,7 @@
 ## skeleton 💀
 
+[![CI](https://github.com/terror/skeleton/actions/workflows/ci.yml/badge.svg)](https://github.com/terror/skeleton/actions/workflows/ci.yml)
+
 **skeleton** is a tool that makes it easier to start new projects.
 
 It stores your commonly used project specific files in one place, letting you

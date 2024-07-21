@@ -11,11 +11,11 @@ impl Edit {
     let editor = self
       .editor
       .or_else(|| env::var("EDITOR").ok())
-      .context("Failed to locate editor")?;
+      .context("failed to locate editor")?;
 
-    let templates = Search::<Template>::with(store.templates()?.to_vec())
+    let templates = Search::<Template>::with(store.templates(None)?)
       .run()
-      .context("Failed to search templates")?;
+      .context("failed to search templates")?;
 
     for template in templates {
       let name = template.name()?;
@@ -31,10 +31,10 @@ impl Edit {
       let status = Command::new(&editor)
         .arg(&file)
         .status()
-        .context("Failed to open temporary file in editor")?;
+        .context("failed to open temporary file in editor")?;
 
       if !status.success() {
-        bail!("Editor exited with non-zero status");
+        bail!("editor exited with non-zero status");
       }
 
       store.write(&name, &fs::read_to_string(&file)?)?;

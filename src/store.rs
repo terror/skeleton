@@ -23,23 +23,75 @@ impl Store {
   pub(crate) fn load() -> Result<Self> {
     Ok(Self {
       path: dirs::home_dir()
-        .ok_or_else(|| anyhow::anyhow!("Failed to locate home directory"))?
+        .ok_or_else(|| anyhow!("failed to locate home directory"))?
         .join(TEMPLATE_DIR)
         .create()?,
     })
   }
 
   pub(crate) fn exists(&self, name: &str) -> Result<bool> {
-    Ok(self.templates()?.iter().any(|t| t.name().unwrap() == name))
+    Ok(
+      self
+        .templates(None)?
+        .iter()
+        .any(|t| t.name().unwrap() == name),
+    )
   }
 
-  pub(crate) fn templates(&self) -> Result<Vec<Template>> {
-    WalkDir::new(&self.path)
+  /// Retrieves all templates, optionally filtered by group names.
+  ///
+  /// This method returns a list of all templates if no groups are specified,
+  /// or a filtered list of templates that belong to at least one of the
+  /// specified groups.
+  ///
+  /// # Arguments
+  ///
+  /// * `groups` - An optional vector of group names to filter the templates by.
+  ///
+  /// # Returns
+  ///
+  /// Returns a `Result` containing a vector of `Template`s. If groups are specified,
+  /// only templates belonging to at least one of those groups are returned.
+  /// If an error occurs while fetching or filtering the templates, an `Err` is returned.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// let store = Store::load()?;
+  ///
+  /// // Get all templates
+  /// let all_templates = store.templates(None)?;
+  ///
+  /// // Get templates filtered by groups
+  /// let groups = Some(vec!["web".to_string(), "backend".to_string()]);
+  /// let filtered_templates = store.templates(groups)?;
+  /// ```
+  pub(crate) fn templates(
+    &self,
+    groups: Option<Vec<String>>,
+  ) -> Result<Vec<Template>> {
+    let all_templates = WalkDir::new(&self.path)
       .into_iter()
       .filter_map(Result::ok)
       .filter(|e| e.file_type().is_file())
       .map(|e| Template::try_from(e.into_path()))
-      .collect::<Result<Vec<Template>>>()
+      .collect::<Result<Vec<Template>>>()?;
+
+    match groups {
+      Some(groups) if !groups.is_empty() => Ok(
+        all_templates
+          .into_iter()
+          .filter(|template| {
+            template.groups().map_or(false, |template_groups| {
+              template_groups.iter().any(|group| {
+                groups.contains(&group.as_str().unwrap_or_default().to_owned())
+              })
+            })
+          })
+          .collect(),
+      ),
+      _ => Ok(all_templates),
+    }
   }
 
   pub(crate) fn write(&self, name: &str, content: &str) -> Result {
@@ -47,7 +99,7 @@ impl Store {
       self.path.join(format!("{name}{TEMPLATE_EXTENSION}")),
       content,
     )
-    .map_err(|e| anyhow!("Failed to write template: {}", e))
+    .map_err(|err| anyhow!("failed to write template: {err}"))
   }
 }
 
@@ -95,7 +147,7 @@ mod tests {
 
     store.write(template_name, DEFAULT_TEMPLATE).unwrap();
 
-    let templates = store.templates().unwrap();
+    let templates = store.templates(None).unwrap();
 
     assert!(templates.iter().any(|t| t.name().unwrap() == template_name));
   }
@@ -122,7 +174,7 @@ mod tests {
 
     store.write(template_name, template_content).unwrap();
 
-    let templates = store.templates().unwrap();
+    let templates = store.templates(None).unwrap();
 
     let template = templates
       .into_iter()
@@ -150,7 +202,7 @@ mod tests {
     store.write(template_name, DEFAULT_TEMPLATE).unwrap();
     store.write(template_name, updated_content).unwrap();
 
-    let templates = store.templates().unwrap();
+    let templates = store.templates(None).unwrap();
 
     let template = templates
       .into_iter()
@@ -179,5 +231,76 @@ mod tests {
     .unwrap();
 
     assert!(!store.exists(template_name).unwrap());
+  }
+
+  #[test]
+  fn filter_templates_by_group() {
+    let temp_dir = TempDir::new("test").unwrap();
+
+    let store = Store::try_from(temp_dir.into_path()).unwrap();
+
+    let template1 = indoc! {"
+      ---
+      variable: foo
+      groups: [web, frontend]
+      ---
+      Web template
+    "};
+
+    let template2 = indoc! {"
+      ---
+      variable: bar
+      groups: [backend, api]
+      ---
+      Backend template
+    "};
+
+    let template3 = indoc! {"
+      ---
+      variable: baz
+      groups: [web, backend]
+      ---
+      Full-stack template
+    "};
+
+    store.write("web_template", template1).unwrap();
+    store.write("backend_template", template2).unwrap();
+    store.write("fullstack_template", template3).unwrap();
+
+    let web_templates = store.templates(Some(vec!["web".to_string()])).unwrap();
+
+    assert_eq!(web_templates.len(), 2);
+
+    assert!(web_templates
+      .iter()
+      .any(|t| t.name().unwrap() == "web_template"));
+
+    assert!(web_templates
+      .iter()
+      .any(|t| t.name().unwrap() == "fullstack_template"));
+
+    let api_backend_templates = store
+      .templates(Some(vec!["api".to_string(), "backend".to_string()]))
+      .unwrap();
+
+    assert_eq!(api_backend_templates.len(), 2);
+
+    assert!(api_backend_templates
+      .iter()
+      .any(|t| t.name().unwrap() == "backend_template"));
+
+    assert!(api_backend_templates
+      .iter()
+      .any(|t| t.name().unwrap() == "fullstack_template"));
+
+    let nonexistent_group_templates = store
+      .templates(Some(vec!["nonexistent".to_string()]))
+      .unwrap();
+
+    assert_eq!(nonexistent_group_templates.len(), 0);
+
+    let all_templates = store.templates(None).unwrap();
+
+    assert_eq!(all_templates.len(), 3);
   }
 }

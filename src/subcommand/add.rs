@@ -15,7 +15,7 @@ impl Add {
     let editor = self
       .editor
       .or_else(|| env::var("EDITOR").ok())
-      .ok_or_else(|| anyhow!("Failed to locate editor"))?;
+      .ok_or_else(|| anyhow!("failed to locate editor"))?;
 
     let mut name = Input::<String>::new()
       .with_prompt("Template name")
@@ -57,10 +57,10 @@ impl Add {
     let status = process::Command::new(editor)
       .arg(&file)
       .status()
-      .context("Failed to open temporary file in editor")?;
+      .context("failed to open temporary file in editor")?;
 
     if !status.success() {
-      bail!("Editor exited with non-zero status");
+      bail!("editor exited with non-zero status");
     }
 
     store.write(&name, &fs::read_to_string(&file)?)?;

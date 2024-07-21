@@ -4,8 +4,8 @@ use super::*;
 pub(crate) struct Remove;
 
 impl Remove {
-  pub(crate) fn run(self, store: &Store) -> Result<()> {
-    let templates = store.templates()?;
+  pub(crate) fn run(self, store: &Store) -> Result {
+    let templates = store.templates(None)?;
 
     let templates = Search::<Template>::with(templates)
       .run()

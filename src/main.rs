@@ -15,11 +15,7 @@ use {
   serde_yaml::Value,
   skim::prelude::*,
   std::{
-    collections::{HashMap, HashSet},
-    env, fs,
-    path::PathBuf,
-    process,
-    process::Command,
+    collections::HashMap, env, fs, path::PathBuf, process, process::Command,
     sync::Arc,
   },
   tempdir::TempDir,

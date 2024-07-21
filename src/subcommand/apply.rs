@@ -12,27 +12,9 @@ pub(crate) struct Apply {
 
 impl Apply {
   pub(crate) fn run(self, store: &Store) -> Result<()> {
-    let templates = store.templates()?;
-
-    let filter_groups: Option<HashSet<_>> =
-      self.groups.map(|groups| groups.into_iter().collect());
-
-    let filtered_templates: Vec<_> = templates
-      .into_iter()
-      .filter(|template| {
-        filter_groups.as_ref().map_or(true, |groups| {
-          template.groups().map_or(false, |template_groups| {
-            template_groups
-              .iter()
-              .any(|group| groups.contains(group.as_str().unwrap_or_default()))
-          })
-        })
-      })
-      .collect();
-
-    let mut templates = Search::<Template>::with(filtered_templates)
+    let mut templates = Search::<Template>::with(store.templates(self.groups)?)
       .run()
-      .context("Failed to locate template")?;
+      .context("failed to locate template")?;
 
     let effect_variables = ["filename", "command", "groups"];
 
@@ -40,7 +22,7 @@ impl Apply {
       let name = template.name()?;
 
       let filename = template.filename().ok_or_else(|| {
-        anyhow!("Template `{}` does not specify a filename", name.bold())
+        anyhow!("template `{}` does not specify a filename", name.bold())
       })?;
 
       let free_variables = template
@@ -77,9 +59,10 @@ impl Apply {
       }
 
       if let Some(parent) = file_path.parent() {
-        fs::create_dir_all(parent).with_context(|| {
-          format!("Failed to create directories for `{}`", file_path.display())
-        })?;
+        fs::create_dir_all(parent).context(anyhow!(
+          "failed to create directories for `{}`",
+          file_path.display()
+        ))?;
       }
 
       let mut content = template.substitute()?;
@@ -88,9 +71,8 @@ impl Apply {
         content.push('\n');
       }
 
-      fs::write(&file_path, content).with_context(|| {
-        format!("Failed to write file `{}`", file_path.display())
-      })?;
+      fs::write(&file_path, content)
+        .context(anyhow!("failed to write file `{}`", file_path.display()))?;
 
       println!("Applied template `{name}` to `{}`", file_path.display());
 
@@ -100,7 +82,7 @@ impl Apply {
 
         let command_name = command_parts
           .next()
-          .ok_or(anyhow!("Command for template `{}` is empty", name.bold()))?;
+          .ok_or(anyhow!("command for template `{}` is empty", name.bold()))?;
 
         let command_args: Vec<_> = command_parts.collect();
 
@@ -108,13 +90,11 @@ impl Apply {
           .args(command_args)
           .arg(&file_path)
           .output()
-          .with_context(|| {
-            format!("Failed to execute command: {}", command_name)
-          })?;
+          .context(format!("failed to execute command: {}", command_name))?;
 
         if !output.status.success() {
           bail!(
-            "Command failed for template `{}`: {}",
+            "command failed for template `{}`: {}",
             name,
             String::from_utf8_lossy(&output.stderr)
           );

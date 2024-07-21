@@ -39,7 +39,7 @@ impl<T: SkimItem + Clone> Search<T> {
       .collect::<Vec<T>>();
 
     match selected_items.len() {
-      0 => anyhow::bail!("No templates selected"),
+      0 => bail!("no templates selected"),
       _ => Ok(selected_items),
     }
   }

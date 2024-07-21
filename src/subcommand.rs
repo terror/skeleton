@@ -46,9 +46,9 @@ pub(crate) const DEFAULT_TEMPLATE: &str = indoc! {"
   # of the following commands:
   #
   # ```
-  # $ skel apply --groups rust-cli
-  # $ skel apply --groups utility
-  # $ skel apply --groups rust-cli utility
+  # $ sk apply --groups rust-cli
+  # $ sk apply --groups utility
+  # $ sk apply --groups rust-cli utility
   # ```
 
   groups:

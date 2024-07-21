@@ -32,8 +32,8 @@ impl TryFrom<PathBuf> for Template {
     let content = fs::read_to_string(path.clone())?;
 
     if !content.starts_with(Self::FRONTMATTER_DELIMITER) {
-      anyhow::bail!(
-        "Invalid template: {}, template must start with `{}` to specify its frontmatter",
+      bail!(
+        "invalid template: {}, template must start with `{}` to specify its frontmatter",
         path.display(),
         Self::FRONTMATTER_DELIMITER
       );
@@ -42,8 +42,8 @@ impl TryFrom<PathBuf> for Template {
     let frontmatter_end = content
       .find(&format!("\n{}", Self::FRONTMATTER_DELIMITER))
       .ok_or_else(|| {
-        anyhow::anyhow!(
-          "Invalid template: {}, template must contain a frontmatter ending with `{}`",
+        anyhow!(
+          "invalid template: {}, template must contain a frontmatter ending with `{}`",
           path.display(),
           Self::FRONTMATTER_DELIMITER
         )
@@ -74,10 +74,10 @@ impl Template {
     self
       .path
       .file_stem()
-      .ok_or_else(|| anyhow::anyhow!("Failed to get template name"))
+      .ok_or_else(|| anyhow!("failed to get template name"))
       .and_then(|s| {
         s.to_str()
-          .ok_or_else(|| anyhow::anyhow!("Failed to convert template name"))
+          .ok_or_else(|| anyhow!("failed to convert template name"))
           .map(|s| s.to_owned())
       })
   }
@@ -108,8 +108,8 @@ impl Template {
     let frontmatter_end = self.content
       .find(&format!("\n{}", Self::FRONTMATTER_DELIMITER))
       .ok_or_else(|| {
-        anyhow::anyhow!(
-          "Invalid template: {}, template must contain a frontmatter ending with `{}`",
+        anyhow!(
+          "invalid template: {}, template must contain a frontmatter ending with `{}`",
           self.path.display(),
           Self::FRONTMATTER_DELIMITER
         )
@@ -131,8 +131,8 @@ impl Template {
       .to_owned();
 
     if content.is_empty() {
-      anyhow::bail!(
-        "Invalid template: {}, file must contain content",
+      bail!(
+        "invalid template: {}, file must contain content",
         self.path.display()
       );
     }
@@ -158,7 +158,7 @@ mod tests {
   fn simple_valid_template() {
     let tempdir = TempDir::new("valid").unwrap();
 
-    let file = tempdir.path().join("valid.skel");
+    let file = tempdir.path().join("valid.skeleton");
 
     fs::write(
       &file,
@@ -192,7 +192,7 @@ mod tests {
   fn default_template() {
     let tempdir = TempDir::new("default").unwrap();
 
-    let file = tempdir.path().join("default.skel");
+    let file = tempdir.path().join("default.skeleton");
 
     fs::write(&file, DEFAULT_TEMPLATE.trim_start_matches('\n')).unwrap();
 
@@ -220,7 +220,7 @@ mod tests {
   fn populated_variables() {
     let tempdir = TempDir::new("default").unwrap();
 
-    let file = tempdir.path().join("default.skel");
+    let file = tempdir.path().join("default.skeleton");
 
     let template = indoc! {
       "
@@ -268,7 +268,7 @@ mod tests {
   fn invalid_frontmatter_missing_end() {
     let tempdir = TempDir::new("invalid").unwrap();
 
-    let file = tempdir.path().join("invalid.skel");
+    let file = tempdir.path().join("invalid.skeleton");
 
     fs::write(
       &file,
@@ -288,7 +288,7 @@ mod tests {
 
     assert_eq!(
       result.unwrap_err().to_string(),
-      format!("Invalid template: {}, template must contain a frontmatter ending with `---`", file.display())
+      format!("invalid template: {}, template must contain a frontmatter ending with `---`", file.display())
     );
   }
 
@@ -296,7 +296,7 @@ mod tests {
   fn invalid_frontmatter_missing_start() {
     let tempdir = TempDir::new("invalid").unwrap();
 
-    let file = tempdir.path().join("invalid.skel");
+    let file = tempdir.path().join("invalid.skeleton");
 
     fs::write(
       &file,
@@ -316,7 +316,7 @@ mod tests {
 
     assert_eq!(
       result.unwrap_err().to_string(),
-      format!("Invalid template: {}, template must start with `---` to specify its frontmatter",
+      format!("invalid template: {}, template must start with `---` to specify its frontmatter",
       file.display())
     );
   }

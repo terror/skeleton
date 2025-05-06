@@ -55,6 +55,7 @@ impl Apply {
           "File `{}` already exists, specify `--overwrite` to overwrite it",
           file_path.display()
         );
+
         continue;
       }
 

@@ -106,24 +106,14 @@ impl Template {
 
   pub(crate) fn substitute(&self) -> Result<String> {
     let frontmatter_end = self.content
-      .find(&format!("\n{}", Self::FRONTMATTER_DELIMITER))
-      .ok_or_else(|| {
-        anyhow!(
-          "invalid template: {}, template must contain a frontmatter ending with `{}`",
-          self.path.display(),
-          Self::FRONTMATTER_DELIMITER
-        )
-      })?;
-
-    let frontmatter =
-      &self.content[Self::FRONTMATTER_DELIMITER.len()..frontmatter_end].trim();
-
-    let mut variables = HashMap::new();
-
-    if !frontmatter.is_empty() {
-      variables
-        .extend(serde_yaml::from_str::<HashMap<String, Value>>(frontmatter)?);
-    }
+    .find(&format!("\n{}", Self::FRONTMATTER_DELIMITER))
+    .ok_or_else(|| {
+      anyhow!(
+        "invalid template: {}, template must contain a frontmatter ending with `{}`",
+        self.path.display(),
+        Self::FRONTMATTER_DELIMITER
+      )
+    })?;
 
     let content = self.content
       [frontmatter_end + Self::FRONTMATTER_DELIMITER.len() + 1..]
@@ -139,7 +129,7 @@ impl Template {
 
     let mut substituted_content = content;
 
-    for (key, value) in variables.iter() {
+    for (key, value) in self.variables.iter() {
       substituted_content = substituted_content.replace(
         &format!("{{% {} %}}", key),
         serde_yaml::to_string(value)?.trim(),
@@ -319,5 +309,50 @@ mod tests {
       format!("invalid template: {}, template must start with `---` to specify its frontmatter",
       file.display())
     );
+  }
+
+  #[test]
+  fn replace_variable() {
+    let tempdir = TempDir::new("replace").unwrap();
+
+    let file = tempdir.path().join("replace.skeleton");
+
+    fs::write(
+      &file,
+      indoc! {
+      "
+      ---
+      greeting: hello
+      name: world
+      ---
+      {% greeting %}, {% name %}!
+    ",
+      },
+    )
+    .unwrap();
+
+    let mut template = Template::try_from(file).unwrap();
+
+    assert_eq!(template.name().unwrap(), "replace");
+    assert_eq!(template.substitute().unwrap(), "hello, world!");
+
+    template.replace_variable("greeting", Value::String("welcome".to_owned()));
+    assert_eq!(template.substitute().unwrap(), "welcome, world!");
+
+    template.replace_variable("name", Value::String("friend".to_owned()));
+    assert_eq!(template.substitute().unwrap(), "welcome, friend!");
+
+    template.replace_variable("extra", Value::String("unused".to_owned()));
+
+    assert_eq!(
+      template.variables,
+      HashMap::from_iter(vec![
+        ("greeting".to_owned(), Value::String("welcome".to_owned())),
+        ("name".to_owned(), Value::String("friend".to_owned())),
+        ("extra".to_owned(), Value::String("unused".to_owned()))
+      ])
+    );
+
+    assert_eq!(template.substitute().unwrap(), "welcome, friend!");
   }
 }

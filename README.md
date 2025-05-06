@@ -50,11 +50,11 @@ Note that `{% tab_spaces %}` will replace to `2` when applying this template.
 
 The binary is called `sk` and has only been tested on a Unix-based machine.
 
-### Demo
+## Demo
 
 [![asciicast](https://asciinema.org/a/rx0tWWfPTPZNXoBboE7dzX3tX.svg)](https://asciinema.org/a/rx0tWWfPTPZNXoBboE7dzX3tX)
 
-### Installation
+## Installation
 
 You can install the **skeleton** command-line utility via the rust package manager
 [cargo](https://doc.rust-lang.org/cargo/):
@@ -71,7 +71,7 @@ cd skeleton
 cargo install --path .
 ```
 
-### Usage
+## Usage
 
 ```present cargo run -- --help
 Usage: sk <COMMAND>
@@ -88,7 +88,7 @@ Options:
   -h, --help  Print help
 ```
 
-### Prior Art
+## Prior Art
 
 **skeleton** is a re-implementation and improvement of the Python program I wrote a while
 back called **bp**, which you can find [here](https://github.com/terror/bp).

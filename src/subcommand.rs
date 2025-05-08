@@ -2,6 +2,7 @@ use {
   super::*,
   crate::subcommand::{
     add::Add, apply::Apply, edit::Edit, list::List, remove::Remove,
+    rename::Rename,
   },
 };
 
@@ -10,6 +11,7 @@ mod apply;
 mod edit;
 mod list;
 mod remove;
+mod rename;
 
 pub(crate) const DEFAULT_TEMPLATE: &str = indoc! {"
   ---
@@ -75,6 +77,8 @@ pub(crate) enum Subcommand {
   List(List),
   #[clap(about = "Remove an existing template")]
   Remove(Remove),
+  #[clap(about = "Rename an existing template")]
+  Rename(Rename),
 }
 
 impl Subcommand {
@@ -87,6 +91,7 @@ impl Subcommand {
       Self::Edit(edit) => edit.run(&store),
       Self::List(list) => list.run(&store),
       Self::Remove(remove) => remove.run(&store),
+      Self::Rename(rename) => rename.run(&store),
     }
   }
 }

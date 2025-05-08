@@ -20,7 +20,9 @@ impl Remove {
       .map(|template| template.name())
       .collect::<Result<Vec<_>>>()?;
 
-    println!("Removed template(s) `{}` successfully", names.join(", "));
+    if !names.is_empty() {
+      println!("Removed template(s) `{}` successfully", names.join(", "));
+    }
 
     Ok(())
   }

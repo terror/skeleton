@@ -21,13 +21,23 @@ impl<T: SkimItem + Clone> Search<T> {
     self
       .items
       .iter()
-      .try_for_each(|note| tx.send(Arc::new(note.to_owned())))?;
+      .try_for_each(|item| tx.send(Arc::new(item.to_owned())))?;
 
     drop(tx);
 
-    let selected_items = Skim::run_with(&options, Some(rx))
-      .map(|out| out.selected_items)
-      .unwrap_or_else(Vec::new)
+    let output = Skim::run_with(&options, Some(rx));
+
+    let selected_items = output
+      .and_then(|out| {
+        if out.is_abort {
+          None
+        } else {
+          Some(out.selected_items)
+        }
+      })
+      .unwrap_or_else(Vec::new);
+
+    let selected_items = selected_items
       .iter()
       .map(|selected_item| {
         (**selected_item)
@@ -38,9 +48,6 @@ impl<T: SkimItem + Clone> Search<T> {
       })
       .collect::<Vec<T>>();
 
-    match selected_items.len() {
-      0 => bail!("no templates selected"),
-      _ => Ok(selected_items),
-    }
+    Ok(selected_items)
   }
 }

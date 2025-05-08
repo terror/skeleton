@@ -77,6 +77,10 @@ Note that `{% tab_spaces %}` will replace to `2` when applying this template.
 For more information, consult the help output of the command-line interface:
 
 ```present cargo run -- --help
+skeleton-cli 0.2.1
+Liam <liam@scalzulli.com>
+A project scaffolding utility
+
 Usage: sk <COMMAND>
 
 Commands:
@@ -89,7 +93,8 @@ Commands:
   help    Print this message or the help of the given subcommand(s)
 
 Options:
-  -h, --help  Print help
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
 ## Prior Art

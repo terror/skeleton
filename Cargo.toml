@@ -16,12 +16,12 @@ name = "sk"
 path = "src/main.rs"
 
 [dependencies]
-anyhow = "1.0.86"
-clap = { version = "4.5.9", features = ["derive"] }
-colored = "2.1.0"
+anyhow = "1.0.98"
+clap = { version = "4.5.37", features = ["derive"] }
+colored = "2.2.0"
 dialoguer = "0.10.4"
 dirs = "5.0.1"
-indoc = "2.0.5"
+indoc = "2.0.6"
 serde_yaml = "0.9.34"
 skim = "0.10.4"
 tempdir = "0.3.7"

@@ -83,6 +83,7 @@ Commands:
   edit    Edit an existing template
   list    List all templates
   remove  Remove an existing template
+  rename  Rename an existing template
   help    Print this message or the help of the given subcommand(s)
 
 Options:

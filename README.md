@@ -9,6 +9,31 @@
 It stores your commonly used project specific files in one place, letting you
 easily apply them to new projects.
 
+The binary is called `sk` and has only been tested on a Unix-based system.
+
+## Demo
+
+[![asciicast](https://asciinema.org/a/rx0tWWfPTPZNXoBboE7dzX3tX.svg)](https://asciinema.org/a/rx0tWWfPTPZNXoBboE7dzX3tX)
+
+## Installation
+
+You can install the **skeleton** command-line utility via the rust package manager
+[cargo](https://doc.rust-lang.org/cargo/):
+
+```bash
+cargo install skeleton-cli
+```
+
+...or you can build it from source:
+
+```bash
+git clone https://github.com/terror/skeleton
+cd skeleton
+cargo install --path .
+```
+
+## Usage
+
 In essence, a **template** is a file ending in `.skeleton` with a front-matter and
 content. The front-matter is structured
 [YAML](https://en.wikipedia.org/wiki/YAML?useskin=vector) with effect and free
@@ -49,30 +74,7 @@ use_try_shorthand = true
 
 Note that `{% tab_spaces %}` will replace to `2` when applying this template.
 
-The binary is called `sk` and has only been tested on a Unix-based machine.
-
-## Demo
-
-[![asciicast](https://asciinema.org/a/rx0tWWfPTPZNXoBboE7dzX3tX.svg)](https://asciinema.org/a/rx0tWWfPTPZNXoBboE7dzX3tX)
-
-## Installation
-
-You can install the **skeleton** command-line utility via the rust package manager
-[cargo](https://doc.rust-lang.org/cargo/):
-
-```bash
-cargo install skeleton-cli
-```
-
-...or you can build it from source:
-
-```bash
-git clone https://github.com/terror/skeleton
-cd skeleton
-cargo install --path .
-```
-
-## Usage
+For more information, consult the help output of the command-line interface:
 
 ```present cargo run -- --help
 Usage: sk <COMMAND>

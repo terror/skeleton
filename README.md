@@ -1,8 +1,9 @@
 ## skeleton 💀
 
-[![CI](https://github.com/terror/skeleton/actions/workflows/ci.yaml/badge.svg)](https://github.com/terror/skeleton/actions/workflows/ci.yaml)
-[![crates.io](https://shields.io/crates/v/skeleton-cli.svg)](https://crates.io/crates/skeleton-cli)
-[![dependency status](https://deps.rs/repo/github/terror/skeleton/status.svg)](https://deps.rs/repo/github/terror/skeleton)
+[![release](https://img.shields.io/github/release/terror/skeleton.svg?label=release&style=flat&labelColor=1d1d1d&color=424242&logo=github&logoColor=white)](https://github.com/terror/skeleton/releases/latest)
+[![build](https://img.shields.io/github/actions/workflow/status/terror/skeleton/ci.yaml?branch=master&style=flat&labelColor=1d1d1d&color=424242&logo=GitHub%20Actions&logoColor=white&label=build)](https://github.com/terror/skeleton/actions/workflows/ci.yaml)
+[![codecov](https://img.shields.io/codecov/c/gh/terror/skeleton?style=flat&labelColor=1d1d1d&color=424242&logo=Codecov&logoColor=white)](https://codecov.io/gh/terror/skeleton)
+[![downloads](https://img.shields.io/github/downloads/terror/skeleton/total.svg?style=flat&labelColor=1d1d1d&color=424242&logo=github&logoColor=white)](https://github.com/terror/skeleton/releases)
 
 **skeleton** is a tool that makes it easier to start new projects.
 

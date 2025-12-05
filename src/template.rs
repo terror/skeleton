@@ -2,12 +2,16 @@ use super::*;
 
 #[derive(Debug, Clone)]
 pub(crate) struct Template {
-  pub(crate) path: PathBuf,
   pub(crate) content: String,
+  pub(crate) path: PathBuf,
   pub(crate) variables: HashMap<String, Value>,
 }
 
 impl SkimItem for Template {
+  fn preview(&self, _context: PreviewContext) -> ItemPreview {
+    ItemPreview::Command(format!("cat \"{}\"", self.path.display()))
+  }
+
   fn text(&self) -> Cow<str> {
     Cow::Owned(
       self
@@ -18,10 +22,6 @@ impl SkimItem for Template {
         .unwrap()
         .to_string(),
     )
-  }
-
-  fn preview(&self, _context: PreviewContext) -> ItemPreview {
-    ItemPreview::Command(format!("cat \"{}\"", self.path.display()))
   }
 }
 
@@ -60,8 +60,8 @@ impl TryFrom<PathBuf> for Template {
     }
 
     Ok(Template {
-      path,
       content,
+      path,
       variables,
     })
   }
@@ -70,24 +70,12 @@ impl TryFrom<PathBuf> for Template {
 impl Template {
   const FRONTMATTER_DELIMITER: &'static str = "---";
 
-  pub(crate) fn name(&self) -> Result<String> {
-    self
-      .path
-      .file_stem()
-      .ok_or_else(|| anyhow!("failed to get template name"))
-      .and_then(|s| {
-        s.to_str()
-          .ok_or_else(|| anyhow!("failed to convert template name"))
-          .map(|s| s.to_owned())
-      })
+  pub(crate) fn command(&self) -> Option<serde_yaml::Value> {
+    self.variables.get("command").cloned()
   }
 
   pub(crate) fn filename(&self) -> Option<serde_yaml::Value> {
     self.variables.get("filename").cloned()
-  }
-
-  pub(crate) fn command(&self) -> Option<serde_yaml::Value> {
-    self.variables.get("command").cloned()
   }
 
   pub(crate) fn groups(&self) -> Option<serde_yaml::Sequence> {
@@ -100,20 +88,32 @@ impl Template {
       .cloned()
   }
 
+  pub(crate) fn name(&self) -> Result<String> {
+    self
+      .path
+      .file_stem()
+      .ok_or_else(|| anyhow!("failed to get template name"))
+      .and_then(|s| {
+        s.to_str()
+          .ok_or_else(|| anyhow!("failed to convert template name"))
+          .map(ToOwned::to_owned)
+      })
+  }
+
   pub(crate) fn replace_variable(&mut self, variable: &str, value: Value) {
     self.variables.insert(variable.to_owned(), value);
   }
 
   pub(crate) fn substitute(&self) -> Result<String> {
     let frontmatter_end = self.content
-    .find(&format!("\n{}", Self::FRONTMATTER_DELIMITER))
-    .ok_or_else(|| {
-      anyhow!(
-        "invalid template: {}, template must contain a frontmatter ending with `{}`",
-        self.path.display(),
-        Self::FRONTMATTER_DELIMITER
-      )
-    })?;
+      .find(&format!("\n{}", Self::FRONTMATTER_DELIMITER))
+      .ok_or_else(|| {
+        anyhow!(
+          "invalid template: {}, template must contain a frontmatter ending with `{}`",
+          self.path.display(),
+          Self::FRONTMATTER_DELIMITER
+        )
+      })?;
 
     let content = self.content
       [frontmatter_end + Self::FRONTMATTER_DELIMITER.len() + 1..]
@@ -129,9 +129,9 @@ impl Template {
 
     let mut substituted_content = content;
 
-    for (key, value) in self.variables.iter() {
+    for (key, value) in &self.variables {
       substituted_content = substituted_content.replace(
-        &format!("{{% {} %}}", key),
+        &format!("{{% {key} %}}"),
         serde_yaml::to_string(value)?.trim(),
       );
     }

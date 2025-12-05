@@ -1,29 +1,24 @@
 use super::*;
 
-#[derive(Debug, Parser)]
-pub(crate) struct Remove;
+pub(crate) fn run(store: &Store) -> Result {
+  let templates = store.templates(None)?;
 
-impl Remove {
-  pub(crate) fn run(self, store: &Store) -> Result {
-    let templates = store.templates(None)?;
+  let templates = Search::<Template>::with(templates)
+    .run()
+    .context("Failed to locate template")?;
 
-    let templates = Search::<Template>::with(templates)
-      .run()
-      .context("Failed to locate template")?;
-
-    for template in &templates {
-      fs::remove_file(&template.path)?;
-    }
-
-    let names = templates
-      .iter()
-      .map(|template| template.name())
-      .collect::<Result<Vec<_>>>()?;
-
-    if !names.is_empty() {
-      println!("Removed template(s) `{}` successfully", names.join(", "));
-    }
-
-    Ok(())
+  for template in &templates {
+    fs::remove_file(&template.path)?;
   }
+
+  let names = templates
+    .iter()
+    .map(Template::name)
+    .collect::<Result<Vec<_>>>()?;
+
+  if !names.is_empty() {
+    println!("Removed template(s) `{}` successfully", names.join(", "));
+  }
+
+  Ok(())
 }

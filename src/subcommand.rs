@@ -1,9 +1,6 @@
 use {
   super::*,
-  crate::subcommand::{
-    add::Add, apply::Apply, edit::Edit, list::List, remove::Remove,
-    rename::Rename,
-  },
+  crate::subcommand::{add::Add, apply::Apply, edit::Edit, list::List},
 };
 
 mod add;
@@ -76,9 +73,9 @@ pub(crate) enum Subcommand {
   #[clap(about = "List all templates")]
   List(List),
   #[clap(about = "Remove an existing template")]
-  Remove(Remove),
+  Remove,
   #[clap(about = "Rename an existing template")]
-  Rename(Rename),
+  Rename,
 }
 
 impl Subcommand {
@@ -90,8 +87,8 @@ impl Subcommand {
       Self::Apply(apply) => apply.run(&store),
       Self::Edit(edit) => edit.run(&store),
       Self::List(list) => list.run(&store),
-      Self::Remove(remove) => remove.run(&store),
-      Self::Rename(rename) => rename.run(&store),
+      Self::Remove => remove::run(&store),
+      Self::Rename => rename::run(&store),
     }
   }
 }

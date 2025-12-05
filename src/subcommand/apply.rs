@@ -91,7 +91,7 @@ impl Apply {
           .args(command_args)
           .arg(&file_path)
           .output()
-          .context(format!("failed to execute command: {}", command_name))?;
+          .context(format!("failed to execute command: {command_name}"))?;
 
         if !output.status.success() {
           bail!(

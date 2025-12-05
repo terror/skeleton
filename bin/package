@@ -19,9 +19,9 @@ fi
 echo "Building skeleton..."
 
 RUSTFLAGS="--deny warnings --codegen target-feature=+crt-static $TARGET_RUSTFLAGS" \
-  cargo build --bin skeleton --target "$TARGET" --release
+  cargo build --bin sk --target "$TARGET" --release
 
-EXECUTABLE=target/$TARGET/release/skeleton
+EXECUTABLE=target/$TARGET/release/sk
 
 echo "Copying release files..."
 

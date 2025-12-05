@@ -7,8 +7,8 @@ pub(crate) struct Search<T: SkimItem + Clone> {
 impl<T: SkimItem + Clone> Search<T> {
   pub(crate) fn run(&self) -> Result<Vec<T>> {
     let options = SkimOptionsBuilder::default()
-      .height(Some("100%"))
-      .preview(Some(""))
+      .height("100%".to_string())
+      .preview(Some(String::new()))
       .multi(true)
       .build()?;
 

@@ -18,43 +18,70 @@ The binary is called `sk` and has only been tested on a Unix-based system.
 
 ## Installation
 
-You can install the **skeleton** command-line utility via the rust package manager
-[cargo](https://doc.rust-lang.org/cargo/):
+`skeleton` should run on any unix-based system, including Linux, MacOS, and the
+BSDs.
+
+The easiest way to install it is by using
+[cargo](https://doc.rust-lang.org/cargo/index.html), the Rust package manager:
 
 ```bash
 cargo install skeleton-cli
 ```
 
-...or you can build it from source:
+Otherwise, see below for the complete package list:
 
-```bash
-git clone https://github.com/terror/skeleton
-cd skeleton
-cargo install --path .
-```
+#### Cross-platform
+
+<table>
+  <thead>
+    <tr>
+      <th>Package Manager</th>
+      <th>Package</th>
+      <th>Command</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href=https://www.rust-lang.org>Cargo</a></td>
+      <td><a href=https://crates.io/crates/skeleton>skeleton</a></td>
+      <td><code>cargo install skeleton-cli</code></td>
+    </tr>
+    <tr>
+      <td><a href=https://brew.sh>Homebrew</a></td>
+      <td><a href=https://github.com/terror/homebrew-tap>terror/tap/skeleton</a></td>
+      <td><code>brew install terror/tap/skeleton</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### Pre-built binaries
+
+Pre-built binaries for Linux, MacOS, and Windows can be found on
+[the releases page](https://github.com/terror/just-lsp/releases).
 
 ## Usage
 
-In essence, a **template** is a file ending in `.skeleton` with a front-matter and
-content. The front-matter is structured
+In essence, a **template** is a file ending in `.skeleton` with a front-matter
+and content. The front-matter is structured
 [YAML](https://en.wikipedia.org/wiki/YAML?useskin=vector) with effect and free
 variables.
 
-An **effect** variable is pre-defined to perform some action. As of now, there are
-only 3 pre-defined variables of this type:
+An **effect** variable is pre-defined to perform some action. As of now, there
+are only 3 pre-defined variables of this type:
 
-| Name         | Type       | Required | Description                                                                           |
-|--------------|------------|----------|---------------------------------------------------------------------------------------|
-| `command`    | String     | No       | A command to run on a template post-write.                                            |
-| `filename`   | String     | Yes      | Specifies the name of the templates destination location during application.          |
-| `groups`     | Sequence   | No       | Groups this template belongs to, used commonly when batch applying templates.         |
+| Name       | Type     | Required | Description                                                                   |
+| ---------- | -------- | -------- | ----------------------------------------------------------------------------- |
+| `command`  | String   | No       | A command to run on a template post-write.                                    |
+| `filename` | String   | Yes      | Specifies the name of the templates destination location during application.  |
+| `groups`   | Sequence | No       | Groups this template belongs to, used commonly when batch applying templates. |
 
-See [subcommand.rs](https://github.com/terror/skeleton/blob/master/src/subcommand.rs)
+See
+[subcommand.rs](https://github.com/terror/skeleton/blob/master/src/subcommand.rs)
 for further elaboration on these effect variables.
 
-A **free** variable is used to substitute into the templates content, you can also
-specify whether or not to be interactively prompted for these types of variables
-when applying templates.
+A **free** variable is used to substitute into the templates content, you can
+also specify whether or not to be interactively prompted for these types of
+variables when applying templates.
 
 These types of variables follow a special kind of syntax when used within
 templates, for instance:
@@ -100,5 +127,6 @@ Options:
 
 ## Prior Art
 
-**skeleton** is a re-implementation and improvement of the Python program I wrote a while
-back called **bp**, which you can find [here](https://github.com/terror/bp).
+**skeleton** is a re-implementation and improvement of the Python program I
+wrote a while back called **bp**, which you can find
+[here](https://github.com/terror/bp).

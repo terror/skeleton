@@ -51,12 +51,28 @@ impl Apply {
         std::env::current_dir()?.join(filename.as_str().unwrap_or_default());
 
       if file_path.exists() && !self.overwrite {
-        println!(
-          "File `{}` already exists, specify `--overwrite` to overwrite it",
-          file_path.display()
-        );
+        if self.interactive {
+          let theme = ColorfulTheme::default();
 
-        continue;
+          let overwrite_confirmed = Confirm::with_theme(&theme)
+            .with_prompt(format!(
+              "File `{}` already exists. Overwrite?",
+              file_path.display()
+            ))
+            .interact()?;
+
+          if !overwrite_confirmed {
+            println!("Skipping file `{}`", file_path.display());
+            continue;
+          }
+        } else {
+          println!(
+            "File `{}` already exists, specify `--overwrite` to overwrite it",
+            file_path.display()
+          );
+
+          continue;
+        }
       }
 
       if let Some(parent) = file_path.parent() {

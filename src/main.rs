@@ -10,7 +10,7 @@ use {
   anyhow::{anyhow, bail, Context},
   clap::Parser,
   colored::*,
-  dialoguer::{theme::ColorfulTheme, Input},
+  dialoguer::{theme::ColorfulTheme, Confirm, Input},
   indoc::indoc,
   serde_yaml::Value,
   skim::prelude::*,

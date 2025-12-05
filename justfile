@@ -44,6 +44,10 @@ forbid:
 install:
   cargo install -f skeleton-cli
 
+[group: 'release']
+publish:
+  ./bin/publish
+
 [group: 'dev']
 run *args:
   cargo run {{ args }}

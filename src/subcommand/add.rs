@@ -4,10 +4,10 @@ use super::*;
 pub(crate) struct Add {
   #[clap(long, short, help = "Editor to edit the file with")]
   editor: Option<String>,
-  #[clap(long, short, help = "Pre-populate the file with a template")]
-  with_template: bool,
   #[clap(long, short)]
   from_file: Option<PathBuf>,
+  #[clap(long, short, help = "Pre-populate the file with a template")]
+  with_template: bool,
 }
 
 impl Add {

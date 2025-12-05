@@ -20,15 +20,6 @@ impl TryFrom<PathBuf> for Store {
 }
 
 impl Store {
-  pub(crate) fn load() -> Result<Self> {
-    Ok(Self {
-      path: dirs::home_dir()
-        .ok_or_else(|| anyhow!("failed to locate home directory"))?
-        .join(TEMPLATE_DIR)
-        .create()?,
-    })
-  }
-
   pub(crate) fn exists(&self, name: &str) -> Result<bool> {
     Ok(
       self
@@ -36,6 +27,15 @@ impl Store {
         .iter()
         .any(|t| t.name().unwrap() == name),
     )
+  }
+
+  pub(crate) fn load() -> Result<Self> {
+    Ok(Self {
+      path: dirs::home_dir()
+        .ok_or_else(|| anyhow!("failed to locate home directory"))?
+        .join(TEMPLATE_DIR)
+        .create()?,
+    })
   }
 
   /// Retrieves all templates, optionally filtered by group names.
@@ -82,7 +82,7 @@ impl Store {
         all_templates
           .into_iter()
           .filter(|template| {
-            template.groups().map_or(false, |template_groups| {
+            template.groups().is_some_and(|template_groups| {
               template_groups.iter().any(|group| {
                 groups.contains(&group.as_str().unwrap_or_default().to_owned())
               })

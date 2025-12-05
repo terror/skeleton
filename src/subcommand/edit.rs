@@ -39,7 +39,7 @@ impl Edit {
 
       store.write(&name, &fs::read_to_string(&file)?)?;
 
-      println!("Saved changes to `{}` successfully.", name.bold())
+      println!("Saved changes to `{}` successfully.", name.bold());
     }
 
     Ok(())

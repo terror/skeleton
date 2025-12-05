@@ -8,11 +8,12 @@ pub(crate) trait PathExt {
 
 impl PathExt for PathBuf {
   fn create(self) -> Result<Self> {
-    if !self.exists() {
-      fs::create_dir_all(self.clone())?;
-      Ok(self)
-    } else {
-      Ok(self)
+    if self.exists() {
+      return Ok(self);
     }
+
+    fs::create_dir_all(self.clone())?;
+
+    Ok(self)
   }
 }

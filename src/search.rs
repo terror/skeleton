@@ -5,10 +5,6 @@ pub(crate) struct Search<T: SkimItem + Clone> {
 }
 
 impl<T: SkimItem + Clone> Search<T> {
-  pub(crate) fn with(items: Vec<T>) -> Self {
-    Self { items }
-  }
-
   pub(crate) fn run(&self) -> Result<Vec<T>> {
     let options = SkimOptionsBuilder::default()
       .height(Some("100%"))
@@ -35,7 +31,7 @@ impl<T: SkimItem + Clone> Search<T> {
           Some(out.selected_items)
         }
       })
-      .unwrap_or_else(Vec::new);
+      .unwrap_or_default();
 
     let selected_items = selected_items
       .iter()
@@ -49,5 +45,9 @@ impl<T: SkimItem + Clone> Search<T> {
       .collect::<Vec<T>>();
 
     Ok(selected_items)
+  }
+
+  pub(crate) fn with(items: Vec<T>) -> Self {
+    Self { items }
   }
 }

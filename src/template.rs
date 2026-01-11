@@ -3,11 +3,16 @@ use super::*;
 #[derive(Debug, Clone)]
 pub(crate) struct Template {
   pub(crate) content: String,
+  index: usize,
   pub(crate) path: PathBuf,
   pub(crate) variables: HashMap<String, Value>,
 }
 
 impl SkimItem for Template {
+  fn get_index(&self) -> usize {
+    self.index
+  }
+
   fn preview(&self, _context: PreviewContext) -> ItemPreview {
     ItemPreview::Command(format!("cat \"{}\"", self.path.display()))
   }
@@ -61,6 +66,7 @@ impl TryFrom<PathBuf> for Template {
 
     Ok(Template {
       content,
+      index: 0,
       path,
       variables,
     })
@@ -137,6 +143,11 @@ impl Template {
     }
 
     Ok(substituted_content)
+  }
+
+  pub(crate) fn with_index(mut self, index: usize) -> Self {
+    self.index = index;
+    self
   }
 }
 

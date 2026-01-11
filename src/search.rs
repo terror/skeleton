@@ -10,6 +10,7 @@ impl<T: SkimItem + Clone> Search<T> {
       .height("100%".to_string())
       .preview(Some(String::new()))
       .multi(true)
+      .bind(vec!["tab:toggle+down,btab:toggle+up".to_string()])
       .build()?;
 
     let (tx, rx): (SkimItemSender, SkimItemReceiver) = unbounded();

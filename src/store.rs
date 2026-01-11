@@ -77,21 +77,27 @@ impl Store {
       .map(|e| Template::try_from(e.into_path()))
       .collect::<Result<Vec<Template>>>()?;
 
-    match groups {
-      Some(groups) if !groups.is_empty() => Ok(
-        all_templates
-          .into_iter()
-          .filter(|template| {
-            template.groups().is_some_and(|template_groups| {
-              template_groups.iter().any(|group| {
-                groups.contains(&group.as_str().unwrap_or_default().to_owned())
-              })
+    let templates = match groups {
+      Some(groups) if !groups.is_empty() => all_templates
+        .into_iter()
+        .filter(|template| {
+          template.groups().is_some_and(|template_groups| {
+            template_groups.iter().any(|group| {
+              groups.contains(&group.as_str().unwrap_or_default().to_owned())
             })
           })
-          .collect(),
-      ),
-      _ => Ok(all_templates),
-    }
+        })
+        .collect(),
+      _ => all_templates,
+    };
+
+    Ok(
+      templates
+        .into_iter()
+        .enumerate()
+        .map(|(i, t)| t.with_index(i))
+        .collect(),
+    )
   }
 
   pub(crate) fn write(&self, name: &str, content: &str) -> Result {

@@ -37,7 +37,7 @@ unnecessary_wraps = "allow"
 wildcard_imports = "allow"
 
 [dependencies]
-anyhow = "1.0.100"
+anyhow = "1.0.101"
 clap = { version = "4.5.54", features = ["derive"] }
 colored = "3.0.0"
 dialoguer = "0.12.0"
